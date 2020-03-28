@@ -5,10 +5,12 @@ using UnityEngine;
 public class SelecModeloControlador : MonoBehaviour
 {
     public float minDistancia = 5f;
+    public float maxDistancia = 80f;
     public float velocidad = 5f;
-    private SelecModelo highlightObject;
+    private SelecModelo modelo;
     private Camera camara;
     public float valorInicialFOV;
+    public Transform target;
 
     private void Awake()
     {
@@ -16,62 +18,93 @@ public class SelecModeloControlador : MonoBehaviour
         valorInicialFOV = camara.fieldOfView;
     }
 
-    public void SelectObject(SelecModelo highlightObject)
+    public void ResetFOV()
     {
-        if(this.highlightObject != null && this.highlightObject != highlightObject)
+        this.camara.fieldOfView = valorInicialFOV;
+    }
+
+    public void SelectObject(SelecModelo modelo)
+    {
+        if(this.modelo != null && this.modelo != modelo)
         {
-            this.highlightObject.DetenerResaltar();
+            this.modelo.DetenerResaltar();
+            ResetFOV();
         }
 
-        this.highlightObject = highlightObject;
-        this.highlightObject.ComenzarResaltar();
+        this.modelo = modelo;
+        this.target = this.modelo.Transformar();
+        //this.camara.transform.LookAt(this.target);
+        this.modelo.ComenzarResaltar();
     }
+
+
 
     void Update()
     {
+        // ------------------------- Rotaciones ------------------------------
         if (Input.GetKey(KeyCode.W))
         {
-            this.highlightObject.transform.Rotate(1f, 0f, 0f);
+            this.modelo.transform.Rotate(1.5f, 0f, 0f, Space.World);
         }
 
         if (Input.GetKey(KeyCode.S))
         {
 
-            this.highlightObject.transform.Rotate(-1f, 0f, 0f);
+            this.modelo.transform.Rotate(-1.5f, 0f, 0f, Space.World);
         }
-
 
         if (Input.GetKey(KeyCode.A))
         {
-            this.highlightObject.transform.Rotate(0f, 0f, 1f);
+            this.modelo.transform.Rotate(0f, 0f, 1.5f);
         }
         
         if (Input.GetKey(KeyCode.D))
         {
-            this.highlightObject.transform.Rotate(0f, 0f, -1f);
+            this.modelo.transform.Rotate(0f, 0f, -1.5f);
         }
 
         if (Input.GetKey(KeyCode.E))
         {
-            this.highlightObject.transform.Rotate(0f, 1f, 0f);
+            this.modelo.transform.Rotate(0f, 1.5f, 0f);
         }
 
         if (Input.GetKey(KeyCode.Q))
         {
-            this.highlightObject.transform.Rotate(0f, -1f, 0f);
+            this.modelo.transform.Rotate(0f, -1.5f, 0f);
         }
+        // ----------------------------------------------------------------
 
-
-        if (Input.GetKeyDown("up"))
+        // ---------------------------- Zoom ---------------------------------
+        if(Input.GetKeyDown("up"))
         {
-            Debug.Log(this.valorInicialFOV);
-            camara.fieldOfView -= velocidad;
+            if(this.modelo != null)
+            {
+                this.camara.transform.LookAt(this.target);
+                if(this.camara.fieldOfView - 5 >= minDistancia)
+                {
+                    this.camara.fieldOfView -= velocidad;
+                }
+            }else
+            {
+                ResetFOV();
+            }
         }
         if (Input.GetKeyDown("down"))
         {
-            Debug.Log(this.valorInicialFOV);
-            camara.fieldOfView += velocidad;
+            
+            if (this.modelo != null)
+            {
+                this.camara.transform.LookAt(this.target);
+                if (this.camara.fieldOfView + 5 <= maxDistancia)
+                {
+                    this.camara.fieldOfView += velocidad;
+                }
+            }else
+            {
+                ResetFOV();
+            }
         }
+        // ------------------------------------------------------------------
     }
 
 

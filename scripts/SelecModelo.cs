@@ -12,7 +12,7 @@ public class SelecModelo : MonoBehaviour
     private Material material;
     private Color normalColor;
     private Color selectedColor;
-
+    private MeshRenderer esteModelo;
 
     private void Awake()
     {
@@ -28,7 +28,7 @@ public class SelecModelo : MonoBehaviour
 
     private void Start()
     {
-        //rotation = GetComponent<MeshRenderer>().transform;
+        esteModelo = GetComponent<MeshRenderer>();
     }
 
     public void ComenzarResaltar()
@@ -52,5 +52,9 @@ public class SelecModelo : MonoBehaviour
         controller.SelectObject(this);
     }
 
+    public Transform Transformar()
+    {
+        return this.esteModelo.transform;
+    }
     
 }
