@@ -13,6 +13,8 @@ public class SelecModelo : MonoBehaviour
     private Color normalColor;
     private Color selectedColor;
     private MeshRenderer esteModelo;
+    public string titulo;
+    public string descripcion;
 
     private void Awake()
     {
@@ -49,12 +51,30 @@ public class SelecModelo : MonoBehaviour
 
     public void OnMouseDown()
     {
-        controller.SelectObject(this);
+        string desde = "izquierdo";
+        controller.SelectObject(this, desde);
+    }
+    public void OnMouseOver()
+    {
+        string desde = "derecho";
+        if (Input.GetMouseButtonDown(1))
+        {
+            controller.SelectObject(this, desde);
+        }
     }
 
     public Transform Transformar()
     {
         return this.esteModelo.transform;
     }
-    
+
+    public string GetTitulo()
+    {
+        return this.titulo;
+    }
+
+    public string GetDescripcion()
+    {
+        return this.descripcion;
+    }
 }
